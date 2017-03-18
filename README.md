@@ -16,5 +16,16 @@ reliability of your application.
 * [webview](https://github.com/atom/electron/blob/master/docs/api/web-view-tag.md)
 
 
-## Screenshot
-![screenshot](/webview/browser/screenshot/screenshot.png)
+# UKWA Desktop Client
+
+Idea is to use [this hook](https://github.com/electron/electron/blob/master/docs/api/app.md#appsetasdefaultprotocolclientprotocol-path-args-macos-windows) to register a special URI scheme:
+
+    webarchive-proxy://www.webarchive.org.uk:8090/wayback?url=http://www.bl.uk&timestamp=20161020120000
+
+This then gets loaded in as a proxy (webarchive.org.uk:8090 called 'wayback') and visiting a URI at the given timestamp.
+
+We can send the timestamp as an Accept-Datetime header as per [this example](http://stackoverflow.com/questions/35672602/how-to-set-electron-useragent), after having set the proxy as per [this example](http://stackoverflow.com/questions/37393248/how-connect-to-proxy-in-electron-webview)
+
+More sophisticate versions could use pywb (as per [WAIL](https://github.com/N0taN3rd/wail)) and/or use a proxy that proxies requests against IA/Memento endpoints and uses the Wayback `id_` hack to return raw objects.
+
+
