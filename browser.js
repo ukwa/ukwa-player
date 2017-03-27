@@ -14,7 +14,7 @@ onload = function() {
   };
 
   document.querySelector('#home').onclick = function() {
-    navigateTo('http://www.github.com/');
+    navigateTo('http://example.org/');
   };
 
   document.querySelector('#reload').onclick = function() {
@@ -253,6 +253,8 @@ function handleLoadCommit() {
 function handleLoadStart(event) {
   document.body.classList.add('loading');
   isLoading = true;
+
+  console.log(event);
 
   resetExitedState();
   if (!event.isTopLevel) {
