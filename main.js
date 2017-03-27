@@ -13,6 +13,6 @@ app.on('ready', function() {
   });
   mainWindow.webContents.session.setProxy({proxyRules:"http=localhost:18090;https=localhost:18090"}, function () {
       mainWindow.loadURL('file://' + __dirname + '/browser.html');
-      mainWindow.openDevTools();
+//      mainWindow.openDevTools();
   });
 });
