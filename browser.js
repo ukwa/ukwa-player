@@ -14,6 +14,7 @@ onload = function() {
   };
 
   document.querySelector('#home').onclick = function() {
+    webview.openDevTools(); 
     navigateTo('http://example.org/');
   };
 
