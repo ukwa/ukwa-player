@@ -58,7 +58,7 @@ compared to the back/forward buttons */
   font-size: 18px;
 }
 
-#location {
+#location, .target-date-picker {
   border: solid 1px #ccc;
   padding: 2px;
   width: 100%;

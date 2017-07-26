@@ -3,18 +3,21 @@
   "version": "1.1.0",
   "author": "UK Web Archive",
   "main": "main.js",
-"build": {
-  "appId": "your.id",
-  "mac": {
-    "category": "your.app.category.type"
-  }
-},
-"scripts": {
-  "pack": "build --dir",
-  "dist": "build"
-},
-"devDependencies": {
+  "build": {
+    "appId": "your.id",
+    "mac": {
+      "category": "your.app.category.type"
+    }
+  },
+  "scripts": {
+    "pack": "build --dir",
+    "dist": "build"
+  },
+  "devDependencies": {
     "electron": "1.6.2",
     "electron-builder": "15.6.2"
-}
+  },
+  "dependencies": {
+    "flatpickr": "^3.0.6"
+  }
 }

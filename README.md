@@ -28,4 +28,7 @@ We can send the timestamp as an Accept-Datetime header as per [this example](htt
 
 More sophisticate versions could use pywb (as per [WAIL](https://github.com/N0taN3rd/wail)) and/or use a proxy that proxies requests against IA/Memento endpoints and uses the Wayback `id_` hack to return raw objects.
 
+Use this nice date picker to pick target date: https://chmln.github.io/flatpickr/getting-started/
+
+Add some kind of timeline of captures, a-la Wayback timeline.
 

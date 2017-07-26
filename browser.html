@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="node_modules/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="browser.css">
     <script src="browser.js"></script>
   <body>
@@ -14,6 +15,7 @@
       <form id="location-form">
         <div id="center-column">
           <input id="location" type="text" value="http://example.org">
+          <input id="target-date" class="target-date-picker" type="text" placeholder="Select Date..." data-input>
         </div>
         <input type="submit" value="Go">
       </form>

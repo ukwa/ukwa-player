@@ -1,8 +1,14 @@
+const flatpickr = require("flatpickr");
+
 window.onresize = doLayout;
 var isLoading = false;
 
 onload = function() {
   var webview = document.querySelector('webview');
+
+  var targetDate = flatpickr("#target-date", { dateFormat: "Z", altInput: true, enableTime: true, altFormat: 'J F Y h:i K' });
+  console.log(targetDate);
+
   doLayout();
 
   document.querySelector('#back').onclick = function() {
@@ -164,6 +170,7 @@ function doLayout() {
   sadWebview.style.width = webviewWidth + 'px';
   sadWebview.style.height = webviewHeight * 2/3 + 'px';
   sadWebview.style.paddingTop = webviewHeight/3 + 'px';
+
 }
 
 function handleExit(event) {
@@ -272,7 +279,7 @@ function handleLoadStop(event) {
 }
 
 function handleLoadAbort(event) {
-  console.log('LoadAbort');
+  console.log('LoadAbort: ' + event.errorDescription);
   console.log('  url: ' + event.url);
   console.log('  isTopLevel: ' + event.isTopLevel);
   console.log('  type: ' + event.type);
