@@ -6,7 +6,7 @@ var isLoading = false;
 onload = function() {
   var webview = document.querySelector('webview');
 
-  var targetDate = flatpickr("#target-date", { dateFormat: "Z", altInput: true, enableTime: true, altFormat: 'J F Y h:i K' });
+  var targetDate = flatpickr("#target-date", { dateFormat: "Z", altInput: true, enableTime: true, altFormat: 'J F Y h:i K' , defaultDate: new Date() });
   console.log(targetDate);
 
   doLayout();

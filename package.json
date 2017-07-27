@@ -1,12 +1,17 @@
 {
-  "name": "ukwa-desktop",
+  "name": "ukwa-player",
+  "description": "UK Web Archive Player",
+  "homepage": "http://www.webarchive.org.uk",
+  "repository": "https://github.com/ukwa/ukwa-player",
+  "license": "AGPL-3.0",
   "version": "1.1.0",
   "author": "UK Web Archive",
   "main": "main.js",
   "build": {
-    "appId": "your.id",
+    "appId": "uk.org.webarchive.ukwa-player",
+    "productName": "UKWA Player",
     "mac": {
-      "category": "your.app.category.type"
+      "category": "public.app-category.utilities"
     }
   },
   "scripts": {
@@ -15,9 +20,11 @@
   },
   "devDependencies": {
     "electron": "1.6.2",
-    "electron-builder": "15.6.2"
+    "electron-builder": "15.6.2",
+    "yarn": "^0.27.5"
   },
   "dependencies": {
-    "flatpickr": "^3.0.6"
+    "flatpickr": "^3.0.6",
+    "http-proxy": "^1.16.2"
   }
 }
