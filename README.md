@@ -34,3 +34,8 @@ Add some kind of timeline of captures, a-la Wayback timeline.
 
 
 https://github.com/electron-userland/electron-builder#cli-usage
+
+How to make icns and ico: see scripts
+
+
+/node_modules/.bin/yarn dist
