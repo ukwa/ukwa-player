@@ -6,7 +6,7 @@ var isLoading = false;
 onload = function() {
   var webview = document.querySelector('webview');
 
-  var targetDate = flatpickr("#target-date", { dateFormat: "Z", altInput: true, enableTime: true, altFormat: 'J F Y h:i K' , defaultDate: new Date() });
+  var targetDate = flatpickr("#target-date", { dateFormat: "Z", altInput: true, enableTime: true, altFormat: 'J F Y h:i K' , defaultDate: new Date(1996,0,1) });
   console.log(targetDate);
 
   doLayout();
@@ -21,7 +21,7 @@ onload = function() {
 
   document.querySelector('#home').onclick = function() {
     webview.openDevTools(); 
-    navigateTo('http://example.org/');
+    navigateTo('http://www.webarchive.org.uk/');
   };
 
   document.querySelector('#reload').onclick = function() {
