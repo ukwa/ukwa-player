@@ -83,7 +83,7 @@ app.on('ready', function() {
       console.log("Cache cleared...");
   });
   mainWindow.webContents.session.setProxy( { proxyRules: 
-  	  "http=localhost:18081;https=localhost:18081"
+  	"http=crawler01.bl.uk:8090;https=crawler01.bl.uk:8090"
   }, function () {
       mainWindow.loadURL('file://' + __dirname + '/browser.html');
       //mainWindow.openDevTools();
