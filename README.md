@@ -20,7 +20,7 @@ reliability of your application.
 
 Idea is to use [this hook](https://github.com/electron/electron/blob/master/docs/api/app.md#appsetasdefaultprotocolclientprotocol-path-args-macos-windows) to register a special URI scheme:
 
-    webarchive-proxy://www.webarchive.org.uk:8090/wayback?url=http://www.bl.uk&timestamp=20161020120000
+    webarchive-player://oa-proxy.webarchive.org.uk:80/?url=http://www.bl.uk&timestamp=20161020120000
 
 This then gets loaded in as a proxy (webarchive.org.uk:8090 called 'wayback') and visiting a URI at the given timestamp.
 
@@ -39,5 +39,8 @@ https://github.com/electron-userland/electron-builder#cli-usage
 
 How to make icns and ico: see scripts
 npm install -g node-icns
+
+https://github.com/electron-userland/electron-builder/wiki/Options#FileAssociation
+
 
 
