@@ -9,7 +9,7 @@ app.on('window-all-closed', function() {
 
 app.on('ready', function() {
 
-	const defaultProxy = 'crawler01.bl.uk:8090';
+	const defaultProxy = 'localhost:8090';// 'crawler01.bl.uk:8090';
 
   protocol.registerStringProtocol('webarchive-player', function (request, callback) {
     const requestURL = new URL(request.url);
@@ -54,4 +54,8 @@ app.on('ready', function() {
       callback({cancel: false, requestHeaders: details.requestHeaders})
 	});
   })
+  //session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+  	// if URL is SSL bump to non-SSL
+    //callback({cancel: false, redirectURL: non_ssl_url })
+  //})
 });
