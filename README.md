@@ -10,9 +10,11 @@ It is based on an [Electron](https://electron.atom.io/) [example](https://github
 
 The idea is to use [this hook](https://github.com/electron/electron/blob/master/docs/api/app.md#appsetasdefaultprotocolclientprotocol-path-args-macos-windows) to register a special URI scheme:
 
-    webarchive-player://oa-proxy.webarchive.org.uk:80/?url=http://www.bl.uk&timestamp=20161020120000
+    webarchive-player://proxy.webarchive.org.uk:80/?url=http://www.bl.uk&datetime=2016-01-22T11.20.29Z&api=proxy
 
-This should present a summary page that can be bookmarked, with a button that then switched the proxy (oa-proxy.webarchive.org.uk:80) and visits the URI at the given timestamp.
+This should present a summary page that can be bookmarked, with a button that then switched to the proxy-mode API accessible via (oa-proxy.webarchive.org.uk:80) and visits the URI at the given timestamp.
+
+We should also investigate supporting the [already-registered `pwid` scheme](https://www.iana.org/assignments/uri-schemes/prov/pwid). The `pwid` scheme does not appear to have been designed with this use-case in mind, so it's not clear how to map `pwid` URIs to resolvable resources. We'll develop what we need to support playback links, and look to align things later on.
 
 ## To do ##
 
@@ -25,10 +27,12 @@ This should present a summary page that can be bookmarked, with a button that th
  - [ ] Add lots of UI stuff, so it behaves as you'd expect. Hover over links to show them in status bar, buttons behaving correctly at all times, show error pages when things go wrong rather than relying on using the console, etc. etc. etc.
  - [ ] Consider whether some kind of [file association](https://github.com/electron-userland/electron-builder/wiki/Options#FileAssociation) might be a useful alternative or complement to the `webarchive-player` URI scheme.
  - [ ] Make notes on limitations (lack of plugins, Chrome-compatible HTML only, SSL issues)
+ - [ ] Appropriate integration with other APIs as well as proxy mode? Noting issues raised [here](http://ws-dl.blogspot.co.uk/2016/08/2016-08-15-mementos-in-raw-take-two.html)
 
 
 ## Development Notes ##
 
+https://www.christianengvall.se/electron-hello-world/
 
     ./node_modules/.bin/electron .
 
