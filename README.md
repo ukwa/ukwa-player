@@ -34,6 +34,8 @@ We should also investigate supporting the [already-registered `pwid` scheme](htt
 
 https://www.christianengvall.se/electron-hello-world/
 
+export UKWA_PLAYER_PROXY=localhost:8090
+
     ./node_modules/.bin/electron .
 
 We send the timestamp as an Accept-Datetime header as per [this example](http://stackoverflow.com/questions/35672602/how-to-set-electron-useragent), after having set the proxy as per [this example](http://stackoverflow.com/questions/37393248/how-connect-to-proxy-in-electron-webview)
