@@ -15,16 +15,20 @@
     }
   },
   "scripts": {
-    "pack": "build --dir",
-    "dist": "build"
+    "postinstall": "electron-builder install-app-deps",
+    "start": "yarn install && yarn compile && electron ./app",
+    "compile": "rimraf app/out && tsc",
+    "pack": "yarn compile && electron-builder --dir",
+    "dist": "yarn compile && electron-builder",
+    "release": "yarn compile && electron-builder"
   },
   "devDependencies": {
-    "electron": "1.6.2",
-    "electron-builder": "15.6.2",
-    "yarn": "^0.27.5"
+    "electron": "1.7.9",
+    "electron-builder": "^19.39.0",
   },
   "dependencies": {
     "flatpickr": "^3.0.6",
-    "http-proxy": "^1.16.2"
+    "http-proxy": "^1.16.2",
+    "electron-updater": "^2.14.1"
   }
 }

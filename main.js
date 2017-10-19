@@ -1,5 +1,6 @@
 const {app, BrowserWindow, session, protocol} = require('electron');
 const { URL } = require('url');
+var memento = require('memento-client')
 
 let mainWindow;
 
@@ -47,7 +48,7 @@ app.on('ready', function() {
   });
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
   	var targetDate = mainWindow.webContents.executeJavaScript("document.querySelector('#target-date').value", function (result) {
-      console.log("Intercept...");
+      //console.log("Intercept...");
 	  if ( result ) {
           details.requestHeaders['Accept-Datetime'] = new Date(result).toUTCString();
       }
