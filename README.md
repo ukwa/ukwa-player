@@ -29,6 +29,9 @@ This should present a summary page that can be bookmarked, with a button that th
 
 ## Development Notes ##
 
+
+    ./node_modules/.bin/electron .
+
 We send the timestamp as an Accept-Datetime header as per [this example](http://stackoverflow.com/questions/35672602/how-to-set-electron-useragent), after having set the proxy as per [this example](http://stackoverflow.com/questions/37393248/how-connect-to-proxy-in-electron-webview)
 
 Uses this nice date picker to pick target date: https://chmln.github.io/flatpickr/getting-started/

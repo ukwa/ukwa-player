@@ -1,51 +1,46 @@
 matrix:
   include:
-    - os: osx
-      osx_image: xcode9.0
-      language: node_js
-      node_js: "8"
-      env:
-        - ELECTRON_CACHE=$HOME/.cache/electron
-        - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
-
-    - os: linux
-      services: docker
-      language: generic
-
+  - os: osx
+    osx_image: xcode9.0
+    language: node_js
+    node_js: '8'
+    env:
+    - ELECTRON_CACHE=$HOME/.cache/electron
+    - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+  - os: linux
+    services: docker
+    language: generic
 cache:
   directories:
   - node_modules
-  - $HOME/.cache/electron
-  - $HOME/.cache/electron-builder
-
+  - "$HOME/.cache/electron"
+  - "$HOME/.cache/electron-builder"
 before_install:
-  - |
-    if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-      mkdir -p /tmp/git-lfs && curl -L https://github.com/github/git-lfs/releases/download/v2.3.1/git-lfs-$([ "$TRAVIS_OS_NAME" == "linux" ] && echo "linux" || echo "darwin")-amd64-2.3.1.tar.gz | tar -xz -C /tmp/git-lfs --strip-components 1
-      export PATH="/tmp/git-lfs:$PATH"
-    fi
-
+- |
+  if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+    mkdir -p /tmp/git-lfs && curl -L https://github.com/github/git-lfs/releases/download/v2.3.1/git-lfs-$([ "$TRAVIS_OS_NAME" == "linux" ] && echo "linux" || echo "darwin")-amd64-2.3.1.tar.gz | tar -xz -C /tmp/git-lfs --strip-components 1
+    export PATH="/tmp/git-lfs:$PATH"
+  fi
 before_script:
-  - git lfs pull
-
+- git lfs pull
 script:
-  - |
-    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      docker run --rm \
-        --env-file <(env | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS|APPVEYOR_|CSC_|_TOKEN|_KEY|AWS_|STRIP|BUILD_') \
-        -v ${PWD}:/project \
-        -v ~/.cache/electron:/root/.cache/electron \
-        -v ~/.cache/electron-builder:/root/.cache/electron-builder \
-        electronuserland/builder:wine \
-        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn release --linux --win"
-    else
-      yarn release
-    fi
-
+- |
+  if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+    docker run --rm \
+      --env-file <(env | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS|APPVEYOR_|CSC_|_TOKEN|_KEY|AWS_|STRIP|BUILD_') \
+      -v ${PWD}:/project \
+      -v ~/.cache/electron:/root/.cache/electron \
+      -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+      electronuserland/builder:wine \
+      /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn release --linux --win"
+  else
+    yarn release
+  fi
 before_cache:
-  - rm -rf $HOME/.cache/electron-builder/wine
-
+- rm -rf $HOME/.cache/electron-builder/wine
 branches:
   except:
-    - "/^v\\d+\\.\\d+\\.\\d+$/"
-
+  - "/^v\\d+\\.\\d+\\.\\d+$/"
+env:
+  global:
+    secure: v0ybu1el7RAcZyKdggRGXxhPvWsxfpqpba2ttyWg2tvlPhM7lcSeUJ+qDAPgUiqbmWXEIN0nRPsrNQxQ9OEEbx/w3zUqY8Jj1DE/J4mHrWZSaZamxh3zIk8VoYo+iAECDdr04+hBJZ7zzPPA/60foqyYJIXgUwdWuXpT+z9iyuWeA+c3JeTdXltYvssJ3XTUXVd7r7qZVmatEJNp/xCGMG0QhB4EL+hwMVjg0HH6Q5oofmYaursYi9XcZFF7yJNWoFNWh8DTGFXJjgUE0S6MGuCzJJcmrY9vGcVRE3pcq6fymiLF7TLnkqjvGY8ANpEvjW3JE0JEvtTHatp2TKBphMuRQiyQnCBAHyOkgduucQxl6xZ/eREt6jLOFAg9AVgo8YfYeaq4Tqeefswp+T1Mi702p+KFuA1C5X1tjroH5729VMbZcPcUtVdIQYf3yOcnGNqV3di3QZssRmp/0v5C6PMXf5/Qs3pwUlQV1Co7TbpPEBl6d2H+8CYOAMIovFN9tQ3y9LJo/VCfSdWLbCT2eJ5sb5MMQR/ZgfabVP9152GDaS0uBFFCZrjaMiD61hSpy9eSTJVzjRbnH1qTibFfxtODQ6YyWCiwNo1BrOa6MKAb3XbLzwKUZsTv/Qc12/ju5MYya4AZhPOSzNiTPlTFMycBsW0bKt83SyL6q+3f/3M=

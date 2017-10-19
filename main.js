@@ -1,6 +1,7 @@
 const {app, BrowserWindow, session, protocol} = require('electron');
 const { URL } = require('url');
-var memento = require('memento-client')
+const autoUpdater = require("electron-updater").autoUpdater
+//var memento = require('memento-client')
 
 let mainWindow;
 
@@ -10,7 +11,17 @@ app.on('window-all-closed', function() {
 
 app.on('ready', function() {
 
-	const defaultProxy = 'localhost:8090';// 'crawler01.bl.uk:8090';
+  if (process.env.NODE_ENV === 'development') {
+    // Skip autoupdate check
+  } else {
+    autoUpdater.checkForUpdates();
+  }
+
+	var defaultProxy = '192.168.45.25:8090';
+        if( process.env.UKWA_PLAYER_PROXY ) {
+	  defaultProxy = process.env.UKWA_PLAYER_PROXY
+        }
+        console.log("Default Proxy: " + defaultProxy);
 
   protocol.registerStringProtocol('webarchive-player', function (request, callback) {
     const requestURL = new URL(request.url);
@@ -60,3 +71,13 @@ app.on('ready', function() {
     //callback({cancel: false, redirectURL: non_ssl_url })
   //})
 });
+
+autoUpdater.on('update-downloaded', (info) => {
+  // Wait 5 seconds, then quit and install
+  // In your application, you don't need to wait 5 seconds.
+  // You could call autoUpdater.quitAndInstall(); immediately
+  setTimeout(function() {
+    autoUpdater.quitAndInstall();  
+  }, 5000)
+})
+
