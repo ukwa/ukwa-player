@@ -21,6 +21,7 @@ onload = function() {
   };
 
   document.querySelector('#home').onclick = function() {
+    webview.openDevTools();
     ipcRenderer.send('open-dev-tools');
     navigateTo('http://www.webarchive.org.uk/');
   };
@@ -50,7 +51,8 @@ onload = function() {
   webview.addEventListener('did-stop-loading', handleLoadStop);
   webview.addEventListener('did-fail-load', handleLoadAbort);
   webview.addEventListener('did-get-redirect-request', handleLoadRedirect);
-  webview.addEventListener('did-finish-load', handleLoadCommit);
+  webview.addEventListener('load-commit', handleLoadCommit);
+  webview.addEventListener('did-finish-load', handleFinishLoad);
 
   // Test for the presence of the experimental <webview> zoom and find APIs.
   if (typeof(webview.setZoom) == "function" &&
@@ -179,6 +181,7 @@ onload = function() {
 
 function navigateTo(url) {
   resetExitedState();
+  ipcRenderer.send('clear-cache');
   document.querySelector('webview').src = url;
 }
 
@@ -277,7 +280,14 @@ function handleKeyDown(event) {
   }
 }
 
-function handleLoadCommit() {
+function handleLoadCommit(event) {
+  console.log(event)
+  if( event.isMainFrame ) {
+    document.querySelector('#location').value = event.url;
+  }
+}
+
+function handleFinishLoad() {
   resetExitedState();
   var webview = document.querySelector('webview');
   document.querySelector('#location').value = webview.getURL();
@@ -297,7 +307,7 @@ function handleLoadStart(event) {
     return;
   }
 
-  document.querySelector('#location').value = event.url;
+  // No URL here! document.querySelector('#location').value = event.url;
 }
 
 function handleLoadStop(event) {

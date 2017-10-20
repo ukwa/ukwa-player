@@ -70,7 +70,7 @@ app.on('ready', function() {
   });
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
   	mainWindow.webContents.executeJavaScript("document.querySelector('#target-date').value", function (result) {
-    console.log("Intercepting with date: " + result);
+    //console.log("Intercepting with date: " + result);
 	  if ( result ) {
           details.requestHeaders['Accept-Datetime'] = new Date(result).toUTCString();
       }
@@ -84,6 +84,10 @@ app.on('ready', function() {
       mainWindow.webContents.send('navigateTo', cliUrl);
     }
     mainWindow.show()
+  });
+  // Disable certificate verification:
+  session.defaultSession.setCertificateVerifyProc((request, callback) => {
+    callback(0)
   });
   //session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
   	// if URL is SSL bump to non-SSL
@@ -99,6 +103,14 @@ ipcMain.on('open-dev-tools', (event, arg) => {
     console.log(arg)
     mainWindow.openDevTools();
 })
+
+ipcMain.on('clear-cache', (event, arg) => {
+  console.log(arg)
+  mainWindow.webContents.session.clearCache(function(){
+    console.log("Cache cleared...");
+  });
+})
+
 
 autoUpdater.on('update-downloaded', (info) => {
   // Wait 5 seconds, then quit and install
