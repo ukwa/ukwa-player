@@ -10,6 +10,10 @@ It is based on an [Electron](https://electron.atom.io/) [example](https://github
 
 The idea is to use [this hook](https://github.com/electron/electron/blob/master/docs/api/app.md#appsetasdefaultprotocolclientprotocol-path-args-macos-windows) to register a special URI scheme:
 
+    webarchive-player://proxy.webarchive.org.uk:80/?url=http://portico.bl.uk&timestamp=20010101120000
+
+or
+
     webarchive-player://proxy.webarchive.org.uk:80/?url=http://www.bl.uk&datetime=2016-01-22T11.20.29Z&api=proxy
 
 This should present a summary page that can be bookmarked, with a button that then switched to the proxy-mode API accessible via (oa-proxy.webarchive.org.uk:80) and visits the URI at the given timestamp.
