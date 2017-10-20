@@ -12,7 +12,12 @@
     "productName": "UKWA Player",
     "mac": {
       "category": "public.app-category.utilities"
-    }
+    },
+   "protocols": [{
+      "name": "webarchive-player",
+      "role": "Viewer",
+      "schemes": ["webarchive-player"]
+    }]
   },
   "scripts": {
     "postinstall": "electron-builder install-app-deps",

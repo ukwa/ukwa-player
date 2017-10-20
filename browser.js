@@ -1,4 +1,5 @@
 const flatpickr = require("flatpickr");
+const {ipcRenderer} = require('electron');
 
 window.onresize = doLayout;
 var isLoading = false;
@@ -147,6 +148,14 @@ onload = function() {
     find.style.visibility = "hidden";
     find.style.position = "absolute";
   }
+
+  ipcRenderer.on('navigateTo', (event, data) => {
+    // Set the target datetime:
+    targetDate.setDate(data['targetDate']);
+    // Then initiate navigation:
+    navigateTo(data['url'])
+  });
+
 };
 
 function navigateTo(url) {

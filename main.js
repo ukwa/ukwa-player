@@ -11,34 +11,41 @@ app.on('window-all-closed', function() {
 
 app.on('ready', function() {
 
-  if (process.env.NODE_ENV === 'development') {
-    // Skip autoupdate check
-  } else {
-    autoUpdater.checkForUpdates();
-  }
-
 	var defaultProxy = '192.168.45.25:8090';
         if( process.env.UKWA_PLAYER_PROXY ) {
 	  defaultProxy = process.env.UKWA_PLAYER_PROXY
         }
         console.log("Default Proxy: " + defaultProxy);
 
+
+// prints given message both in the terminal console and in the DevTools
+function devToolsLog(s) {
+  console.log(s)
+  if (mainWindow && mainWindow.webContents) {
+    mainWindow.webContents.executeJavaScript(`console.log("${s}")`)
+  }
+}
+
   protocol.registerStringProtocol('webarchive-player', function (request, callback) {
+    devToolsLog("Processing webarchive-player request...");
+    // Parse URL, extract proxy location, URL and timestamp.
     const requestURL = new URL(request.url);
     const proxy = requestURL.host
-    const url = requestURL.searchParams.get('url')
-    const timestamp = requestURL.searchParams.get('timestamp')
-    // Parse URL, extract proxy location, URL and timestamp.
+    const ts = requestURL.searchParams.get('timestamp')
+    // webarchive-player://proxy.webarchive.org.uk/?url=portico.bl.uk&timestamp=20080919042735
+    // Convert to this format: 2011-10-10T14:48:00
+    const targetDate = ts.substr(0,4)+"-"+ts.substr(4,2)+"-"+ts.substr(6,2)+"T"+ts.substr(8,2)+":"+ts.substr(10,2)+":"+ts.substr(12,2); 
+    let url = requestURL.searchParams.get('url')
+    if( ! url.startsWith('http') ) {
+      url = "http://"+url;
+    }
 
-    console.log('url: %s', url);
+    devToolsLog('Got: url="' + url + '" @ targetDate="' + targetDate + '" using proxy="' + proxy + '"');
 
-    mainWindow.webContents.executeJavaScript("document.querySelector('#target-date').value = " + timestamp, 
-    	function (result) { 
-    		console.log(result)
-    	});
-    mainWindow.webContents.executeJavaScript("document.querySelector('#location').value = " + url);
+    mainWindow.webContents.send('navigateTo', { 'url': url, 'targetDate': targetDate });
 
-    callback('It works! Got: ' + url + ' @ ' + timestamp + ' from ' + proxy);
+    callback('It works! Got: ' + url + ' @ ' + targetDate + ' from ' + proxy);
+
   }, function (err) {
     if (!err) {
       console.log('Registered protocol succesfully');
@@ -55,11 +62,11 @@ app.on('ready', function() {
   	"http=" + defaultProxy + ";https="+defaultProxy
   }, function () {
       mainWindow.loadURL('file://' + __dirname + '/browser.html');
-      //mainWindow.openDevTools();
+      mainWindow.openDevTools();
   });
   session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
-  	var targetDate = mainWindow.webContents.executeJavaScript("document.querySelector('#target-date').value", function (result) {
-      //console.log("Intercept...");
+  	mainWindow.webContents.executeJavaScript("document.querySelector('#target-date').value", function (result) {
+    console.log("Intercepting with date: " + result);
 	  if ( result ) {
           details.requestHeaders['Accept-Datetime'] = new Date(result).toUTCString();
       }
@@ -70,6 +77,9 @@ app.on('ready', function() {
   	// if URL is SSL bump to non-SSL
     //callback({cancel: false, redirectURL: non_ssl_url })
   //})
+
+    //autoUpdater.checkForUpdates();
+
 });
 
 autoUpdater.on('update-downloaded', (info) => {
