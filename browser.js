@@ -21,7 +21,7 @@ onload = function() {
   };
 
   document.querySelector('#home').onclick = function() {
-    webview.openDevTools(); 
+    ipcRenderer.send('open-dev-tools');
     navigateTo('http://www.webarchive.org.uk/');
   };
 
@@ -150,10 +150,29 @@ onload = function() {
   }
 
   ipcRenderer.on('navigateTo', (event, data) => {
+    const requestURL = new URL(data);
+    console.log("GOT: " + event);
+    console.log("GOT: " + requestURL);
+    console.log("GOT: " + requestURL.host);
+    console.log("GOT: " + requestURL.searchParams)
+
+    // Parse URL, extract proxy location, URL and timestamp.
+    const proxy = requestURL.host
+    const ts = requestURL.searchParams.get('timestamp')
+    // webarchive-player://proxy.webarchive.org.uk/?url=portico.bl.uk&timestamp=20080919042735
+    // Convert to this format: 2011-10-10T14:48:00
+    const newTargetDate = ts.substr(0,4)+"-"+ts.substr(4,2)+"-"+ts.substr(6,2)+"T"+ts.substr(8,2)+":"+ts.substr(10,2)+":"+ts.substr(12,2); 
+    // Get the URL part:
+    let url = requestURL.searchParams.get('url')
+    if( ! url.startsWith('http') ) {
+      url = "http://"+url;
+    }
+
     // Set the target datetime:
-    targetDate.setDate(data['targetDate']);
+    targetDate.setDate(newTargetDate);
+
     // Then initiate navigation:
-    navigateTo(data['url'])
+    navigateTo(url)
   });
 
 };
