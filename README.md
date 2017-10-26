@@ -2,9 +2,11 @@
 
 This is a basic prototype for a dedicated browser for browing archived web pages via [proxy mode](https://github.com/iipc/openwayback/wiki/Advanced-configuration). The Memento-compliant proxy looks for an `Accept-Datetime` header, and returns the closest matching archived version of the requested URL. Crucially, it does not need to re-write the links, and so should make it easier to distinguish capture problems from playback issues.
 
-It is currently incomplete and hard-coded for use at the UK Web Archive. It allows the target date to be set, and renders the results fairly well, but does not make e.g. actual time versus target time clear. Development will be slow for now, as this is not currently our highest priority. Pull requests are welcome though!
+It is currently incomplete and hard-coded for use at the UK Web Archive. It allows the target date to be set, and renders the results fairly well, but does not make e.g. actual time versus target time clear.
 
 It is based on an [Electron](https://electron.atom.io/) [example](https://github.com/hokein/electron-sample-apps/tree/master/webview/browser) that shows the usage of [webview](https://github.com/electron/electron/blob/master/docs/api/webview-tag.md) in an app.
+
+While a standalone application may have advantages, we are also looking at [achieving the same ends using a browser extension](https://github.com/ukwa/tachyon). Closer integration with the users' browser of choice may make for a better solution overall, so we are exploring both options at present.
 
 ## Desktop integration via custom URI scheme ##
 
