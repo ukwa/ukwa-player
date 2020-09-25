@@ -43,7 +43,8 @@ function createWindow () {
 
   // Set up the UI:
   mainWindow = new BrowserWindow({width: 1024, height: 768, show: true, webPreferences: {
-    nodeIntegration: true
+    nodeIntegration: true,
+    webviewTag: true
   }});
   console.log("Attempting to load...");
   mainWindow.loadFile('browser.html');
@@ -66,9 +67,9 @@ function createWindow () {
   mainWindow.webContents.session.clearCache(function(){
       console.log("Cache cleared...");
   });
-  mainWindow.webContents.session.setProxy( { proxyRules: 
-  	"http=" + defaultProxy + ";https="+defaultProxy
-  });
+  //mainWindow.webContents.session.setProxy( { proxyRules: 
+  //	"http=" + defaultProxy + ";https="+defaultProxy
+  //});
   
   filter =   {
     urls: [
@@ -77,15 +78,14 @@ function createWindow () {
   };
 
   session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
-  	mainWindow.webContents.executeJavaScript("document.querySelector('#target-date').value", function (result) {
+    let reqHeaders = Object.assign({}, details.requestHeaders);
+  	mainWindow.webContents.executeJavaScript("document.querySelector('#target-date').value").then((result) => {
       console.log("Intercepting with date: " + result);
-
-      let reqHeaders = Object.assign({}, details.requestHeaders);
 	    if ( result ) {
         reqHeaders['Accept-Datetime'] = new Date(result).toUTCString();
       }
-      callback({cancel: false, requestHeaders: reqHeaders})
 	  });
+    callback({cancel: false, requestHeaders: reqHeaders})
   })
 
   // Pass in any CLI arg when we are ready:
