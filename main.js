@@ -78,11 +78,13 @@ function createWindow () {
 
   session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
   	mainWindow.webContents.executeJavaScript("document.querySelector('#target-date').value", function (result) {
-    console.log("Intercepting with date: " + result);
-	  if ( result ) {
-      details.requestHeaders['Accept-Datetime'] = new Date(result).toUTCString();
-    }
-    callback({cancel: false, requestHeaders: details.requestHeaders})
+      console.log("Intercepting with date: " + result);
+
+      let reqHeaders = Object.assign({}, details.requestHeaders);
+	    if ( result ) {
+        reqHeaders['Accept-Datetime'] = new Date(result).toUTCString();
+      }
+      callback({cancel: false, requestHeaders: reqHeaders})
 	  });
   })
 
