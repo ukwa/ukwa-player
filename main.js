@@ -2,6 +2,7 @@ const {app, BrowserWindow, session, protocol} = require('electron');
 const { URL } = require('url');
 const autoUpdater = require("electron-updater").autoUpdater
 const {ipcMain} = require('electron')
+const path = require('path')
 //var memento = require('memento-client')
 
 let mainWindow;
@@ -31,14 +32,22 @@ app.on('window-all-closed', function() {
   app.quit();
 });
 
-// 
-app.on('ready', function() {
+//
+function createWindow () {
 
 	var defaultProxy = '192.168.45.25:8090';
   if( process.env.UKWA_PLAYER_PROXY ) {
 	  defaultProxy = process.env.UKWA_PLAYER_PROXY
   }
   devToolsLog("Default Proxy: " + defaultProxy);
+
+  // Set up the UI:
+  mainWindow = new BrowserWindow({width: 1024, height: 768, show: true, webPreferences: {
+    nodeIntegration: true
+  }});
+  console.log("Attempting to load...");
+  mainWindow.loadFile('browser.html');
+  mainWindow.webContents.openDevTools();
 
   // Protocol handler for osx
   app.on('open-url', function (event, url) {
@@ -47,36 +56,36 @@ app.on('ready', function() {
     mainWindow.webContents.send('navigateTo', url);
   });
 
-  protocol.registerStringProtocol('webarchive-player', function (request, callback) {
+  protocol.registerStringProtocol('webarchive-player', function (request) {
     devToolsLog('request.url: ' + request.url);
     mainWindow.webContents.send('navigateTo', request.url);
     callback('It works! Got: ' + request.url);
-  }, function (err) {
-    if (!err) {
-      console.log('Registered protocol succesfully');
-    }
   });
   app.setAsDefaultProtocolClient('webarchive-player')
 
-  // Set up the UI:
-  mainWindow = new BrowserWindow({width: 1024, height: 768, show: false });
   mainWindow.webContents.session.clearCache(function(){
       console.log("Cache cleared...");
   });
   mainWindow.webContents.session.setProxy( { proxyRules: 
   	"http=" + defaultProxy + ";https="+defaultProxy
-  }, function () {
-      mainWindow.loadURL('file://' + __dirname + '/browser.html');
   });
-  session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+  
+  filter =   {
+    urls: [
+      '*://*/*',
+    ],
+  };
+
+  session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
   	mainWindow.webContents.executeJavaScript("document.querySelector('#target-date').value", function (result) {
-    //console.log("Intercepting with date: " + result);
+    console.log("Intercepting with date: " + result);
 	  if ( result ) {
-          details.requestHeaders['Accept-Datetime'] = new Date(result).toUTCString();
-      }
-      callback({cancel: false, requestHeaders: details.requestHeaders})
-	});
+      details.requestHeaders['Accept-Datetime'] = new Date(result).toUTCString();
+    }
+    callback({cancel: false, requestHeaders: details.requestHeaders})
+	  });
   })
+
   // Pass in any CLI arg when we are ready:
   mainWindow.once('ready-to-show', () => {
     if( typeof cliUrl !== "undefined" && cliUrl != null ) {
@@ -95,9 +104,12 @@ app.on('ready', function() {
   //})
 
     //autoUpdater.checkForUpdates();
+  
+}
 
 
-});
+//
+app.whenReady().then(createWindow)
 
 ipcMain.on('open-dev-tools', (event, arg) => {
     console.log(arg)
