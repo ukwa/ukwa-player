@@ -15,7 +15,7 @@
 
       <form id="location-form">
         <div id="center-column">
-          <input id="location" type="text" value="http://www.webarchive.org.uk/">
+          <input id="location" type="text" value="">
           <input id="target-date" class="target-date-picker" type="text" placeholder="Select Date..." data-input>
         </div>
         <input type="submit" value="Go">
@@ -46,7 +46,9 @@
       </form>
     </div>
 
-    <webview src="http://www.webarchive.org.uk/" style="width:640px; height:480px"></webview>
+    <webview src="http://www.webarchive.org.uk/" 
+    webpreferences="nodeIntegration=no, nodeIntegrationInWorker=no, devTools=no"
+    style="display:inline-flex; width:640px; height:480px"></webview>
 
     <div id="sad-webview">
       <div id="sad-webview-icon">&#9762;</div>

@@ -8,14 +8,6 @@ const path = require('path')
 let mainWindow;
 let targetDate;
 
-// prints given message both in the terminal console and in the DevTools
-function devToolsLog(s) {
-  console.log(s)
-  if (mainWindow && mainWindow.webContents) {
-    mainWindow.webContents.executeJavaScript(`console.log("${s}")`)
-  }
-}
-
 // Process any command-line arguments
 if (process.argv.length > 0) {
   // Keep only the first command line argument:
@@ -27,6 +19,10 @@ if (process.argv.length > 0) {
     }
   }
 }
+
+// Twitter not rendering. Tried this.
+// See https://github.com/electron/electron/issues/25421
+app.allowRendererProcessReuse = false;
 
 // 
 app.on('window-all-closed', function() {
@@ -40,13 +36,15 @@ function createWindow () {
   if( process.env.UKWA_PLAYER_PROXY ) {
 	  defaultProxy = process.env.UKWA_PLAYER_PROXY
   }
-  devToolsLog("Default Proxy: " + defaultProxy);
+  console.log("Default Proxy: " + defaultProxy);
 
   // Set up the UI:
   mainWindow = new BrowserWindow({width: 1024, height: 768, show: false, 
     webPreferences: {
       nodeIntegration: true,
+      nodeIntegrationInWorker: false,
       webviewTag: true,
+      devTools: true,
       worldSafeExecuteJavaScript: true
     }});
   console.log("Attempting to load...");
@@ -56,12 +54,12 @@ function createWindow () {
   // Protocol handler for osx
   app.on('open-url', function (event, url) {
     event.preventDefault();
-    devToolsLog("open-url: " + url);
+    console.log("open-url: " + url);
     mainWindow.webContents.send('navigateTo', url);
   });
 
   protocol.registerStringProtocol('webarchive-player', function (request) {
-    devToolsLog('request.url: ' + request.url);
+    console.log('request.url: ' + request.url);
     mainWindow.webContents.send('navigateTo', request.url);
     callback('It works! Got: ' + request.url);
   });
@@ -84,7 +82,7 @@ function createWindow () {
     let reqHeaders = Object.assign({}, details.requestHeaders);
     if( targetDate ) {
       console.log("Intercepting with date: " + targetDate);
-      reqHeaders['Accept-Datetime'] = new Date(targetDate).toUTCString();
+      //reqHeaders['Accept-Datetime'] = new Date(targetDate).toUTCString();
     } 
     callback({cancel: false, requestHeaders: reqHeaders})
   })

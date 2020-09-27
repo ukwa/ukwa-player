@@ -69,12 +69,12 @@ onload = function() {
   webview.addEventListener('did-finish-load', handleFinishLoad);
 
   // Test for the presence of the experimental <webview> zoom and find APIs.
-  if (typeof(webview.setZoom) == "function" &&
-      typeof(webview.find) == "function") {
+  if (typeof(webview.setZoomFactor) == "function" &&
+      typeof(webview.findInPage) == "function") {
     var findMatchCase = false;
 
     document.querySelector('#zoom').onclick = function() {
-      if(document.querySelector('#zoom-box').style.display == '-webkit-flex') {
+      if(document.querySelector('#zoom-box').style.display == 'flex') {
         closeZoomBox();
       } else {
         openZoomBox();
@@ -92,7 +92,7 @@ onload = function() {
         zoomText.value = "0.25";
         zoomFactor = 0.25;
       }
-      webview.setZoom(zoomFactor);
+      webview.setZoomFactor(zoomFactor);
     }
 
     document.querySelector('#zoom-in').onclick = function(e) {
@@ -115,8 +115,12 @@ onload = function() {
     };
 
     document.querySelector('#find-text').oninput = function(e) {
-      webview.find(document.forms['find-form']['find-text'].value,
-                   {matchCase: findMatchCase});
+      to_find = document.forms['find-form']['find-text'].value;
+      if (to_find) {
+        webview.findInPage(to_find, {matchCase: findMatchCase});
+      } else {
+        webview.stopFindInPage('clearSelection');
+      }
     }
 
     document.querySelector('#find-text').onkeydown = function(e) {
@@ -138,20 +142,22 @@ onload = function() {
         matchCase.style.color = "black";
         matchCase.style['font-weight'] = "";
       }
-      webview.find(document.forms['find-form']['find-text'].value,
+      webview.findInPage(document.forms['find-form']['find-text'].value,
                    {matchCase: findMatchCase});
     }
 
     document.querySelector('#find-backward').onclick = function(e) {
       e.preventDefault();
-      webview.find(document.forms['find-form']['find-text'].value,
+      webview.findInPage(document.forms['find-form']['find-text'].value,
                    {backward: true, matchCase: findMatchCase});
     }
 
     document.querySelector('#find-form').onsubmit = function(e) {
       e.preventDefault();
-      webview.find(document.forms['find-form']['find-text'].value,
-                   {matchCase: findMatchCase});
+      to_find = document.forms['find-form']['find-text'].value;
+      if (to_find) {
+        webview.findInPage(to_find, {matchCase: findMatchCase});
+      }
     }
 
     webview.addEventListener('findupdate', handleFindUpdate);
@@ -363,29 +369,26 @@ function getNextPresetZoom(zoomFactor) {
 
 function increaseZoom() {
   var webview = document.querySelector('webview');
-  webview.getZoom(function(zoomFactor) {
-    var nextHigherZoom = getNextPresetZoom(zoomFactor).high;
-    webview.setZoom(nextHigherZoom);
-    document.forms['zoom-form']['zoom-text'].value = nextHigherZoom.toString();
-  });
+  zoomFactor = webview.getZoomFactor();
+  var nextHigherZoom = getNextPresetZoom(zoomFactor).high;
+  webview.setZoomFactor(nextHigherZoom);
+  document.forms['zoom-form']['zoom-text'].value = nextHigherZoom.toString();
 }
 
 function decreaseZoom() {
   var webview = document.querySelector('webview');
-  webview.getZoom(function(zoomFactor) {
-    var nextLowerZoom = getNextPresetZoom(zoomFactor).low;
-    webview.setZoom(nextLowerZoom);
-    document.forms['zoom-form']['zoom-text'].value = nextLowerZoom.toString();
-  });
+  zoomFactor = webview.getZoomFactor();
+  var nextLowerZoom = getNextPresetZoom(zoomFactor).low;
+  webview.setZoomFactor(nextLowerZoom);
+  document.forms['zoom-form']['zoom-text'].value = nextLowerZoom.toString();
 }
 
 function openZoomBox() {
-  document.querySelector('webview').getZoom(function(zoomFactor) {
-    var zoomText = document.forms['zoom-form']['zoom-text'];
-    zoomText.value = Number(zoomFactor.toFixed(6)).toString();
-    document.querySelector('#zoom-box').style.display = '-webkit-flex';
-    zoomText.select();
-  });
+  zoomFactor = document.querySelector('webview').getZoomFactor();
+  var zoomText = document.forms['zoom-form']['zoom-text'];
+  zoomText.value = Number(zoomFactor.toFixed(6)).toString();
+  document.querySelector('#zoom-box').style.display = 'flex';
+  zoomText.select();
 }
 
 function closeZoomBox() {
