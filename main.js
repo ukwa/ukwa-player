@@ -6,6 +6,7 @@ const path = require('path')
 //var memento = require('memento-client')
 
 let mainWindow;
+let targetDate;
 
 // prints given message both in the terminal console and in the DevTools
 function devToolsLog(s) {
@@ -42,10 +43,12 @@ function createWindow () {
   devToolsLog("Default Proxy: " + defaultProxy);
 
   // Set up the UI:
-  mainWindow = new BrowserWindow({width: 1024, height: 768, show: true, webPreferences: {
-    nodeIntegration: true,
-    webviewTag: true
-  }});
+  mainWindow = new BrowserWindow({width: 1024, height: 768, show: false, 
+    webPreferences: {
+      nodeIntegration: true,
+      webviewTag: true,
+      worldSafeExecuteJavaScript: true
+    }});
   console.log("Attempting to load...");
   mainWindow.loadFile('browser.html');
   mainWindow.webContents.openDevTools();
@@ -79,12 +82,10 @@ function createWindow () {
 
   session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
     let reqHeaders = Object.assign({}, details.requestHeaders);
-  	mainWindow.webContents.executeJavaScript("document.querySelector('#target-date').value").then((result) => {
-      console.log("Intercepting with date: " + result);
-	    if ( result ) {
-        reqHeaders['Accept-Datetime'] = new Date(result).toUTCString();
-      }
-	  });
+    if( targetDate ) {
+      console.log("Intercepting with date: " + targetDate);
+      reqHeaders['Accept-Datetime'] = new Date(targetDate).toUTCString();
+    } 
     callback({cancel: false, requestHeaders: reqHeaders})
   })
 
@@ -119,11 +120,19 @@ ipcMain.on('open-dev-tools', (event, arg) => {
 })
 
 ipcMain.on('clear-cache', (event, arg) => {
-  console.log(arg)
+  console.log('clear cache: ' + arg)
   mainWindow.webContents.session.clearCache(function(){
     console.log("Cache cleared...");
   });
 })
+
+ipcMain.on('set-target-date', (event, arg) => {
+  console.log('set-target-date: ' + arg);
+  if ( arg.length == 1) {
+    targetDate = arg[0];
+  }
+})
+
 
 
 autoUpdater.on('update-downloaded', (info) => {

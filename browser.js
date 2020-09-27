@@ -7,7 +7,21 @@ var isLoading = false;
 onload = function() {
   var webview = document.querySelector('webview');
 
-  var targetDate = flatpickr("#target-date", { dateFormat: "Z", altInput: true, enableTime: true, altFormat: 'J F Y h:i K' , defaultDate: new Date(1996,0,1) });
+  var targetDate = flatpickr("#target-date", { 
+    dateFormat: "Z", 
+    altInput: true, 
+    enableTime: true, 
+    altFormat: 'J F Y h:i K' , 
+    defaultDate: new Date(1996,0,1),
+    onReady: function(selectedDates, dateStr, instance) {
+      console.log("Sending target date: " + dateStr);
+      ipcRenderer.send('set-target-date', selectedDates);
+    },
+    onChange: function(selectedDates, dateStr, instance) {
+      console.log("Sending target date: " + dateStr);
+      ipcRenderer.send('set-target-date', selectedDates);
+    }
+  });
   console.log("td" + targetDate);
 
   doLayout();
